@@ -92,8 +92,7 @@ Conventional Commits, en inglés:
 - `ci:` cambios al workflow / pipeline
 - `refactor:` cambios internos sin cambio de comportamiento
 
-No hay remote configurado todavía. **No** hacer `git push` ni `git remote add`
-hasta que el usuario lo indique explícitamente.
+**No** hacer `git push` ni `git remote add` hasta que el usuario lo indique explícitamente.
 
 ## Roadmap del pipeline (qué falta)
 
