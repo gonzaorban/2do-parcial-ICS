@@ -1,6 +1,6 @@
 # Generador de Excusas para no entregar el TP
 
-App académica para el **2do parcial de Integración y Continuous Delivery (ICS)** —
+App académica para el **2do parcial de Integración y Entrega continua(ICS)** —
 UTN, Ingeniería en Sistemas. El foco no es la app sino el **pipeline de CI/CD**
 que la rodea.
 
