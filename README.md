@@ -23,7 +23,7 @@ programador y ciberseguridad mezclados.
 | CI | GitHub Actions (`.github/workflows/ci.yml`) | Orquestador |
 | Security | Snyk (pendiente) | Vulnerability scan en CI |
 | Quality | SonarCloud (pendiente) | Code quality gate en CI |
-| Deploy | Vercel (pendiente) | CD on push to `main` |
+| Deploy | Vercel + CLI oficial | CD on push to `main` |
 
 ## Cómo correr en local
 
@@ -112,9 +112,10 @@ Lo que falta para completar el pipeline (cada uno es un prompt aparte):
 - [ ] **Snyk** — alta de cuenta, `SNYK_TOKEN` secret, step con
       `snyk/actions/node` antes del build. Tener en mente las
       vulnerabilidades de Next 15 / React 19 todavía recientes.
-- [ ] **Vercel deploy** — `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`
-      secrets. Job `deploy` con `amondnet/vercel-action`. Output del job =
-      URL de preview.
+- [x] **Vercel deploy** — `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`
+      secrets en GitHub. Job `deploy` con Vercel CLI oficial (`vercel@latest`).
+      Output del job = URL de producción. `next.config.ts` condiciona
+      `output: 'standalone'` para que Docker siga funcionando.
 - [ ] **Playwright en CI** — job `e2e` que dependa de `deploy`, instala
       Chromium, corre con `BASE_URL=$preview-url`, sube `playwright-report/`
       como artifact.

@@ -9,8 +9,7 @@ proyecto sin contexto previo.
 mínima — un botón que llama a `/api/excuse` y muestra una excusa con badge de
 severidad.
 
-**Por qué existe:** Es el entregable del **2do parcial de Integración y
-Continuous Delivery (ICS)** de la UTN. La nota viene por el **pipeline de
+**Por qué existe:** Es el entregable del **2do parcial de Integración y Entrega continua(ICS)** de la UTN. La nota viene por el **pipeline de
 CI/CD** que se monta alrededor, no por la app en sí.
 
 **Estado actual:** Andamiaje completo en disco. El usuario corre `bash setup.sh`
