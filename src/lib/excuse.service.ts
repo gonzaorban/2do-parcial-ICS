@@ -99,7 +99,8 @@ const EXCUSES: Excuse[] = [
 ];
 
 export function getRandomExcuse(): Excuse {
-  const index = Math.floor(Math.random() * EXCUSES.length);
+  const randomBytes = crypto.getRandomValues(new Uint32Array(1))[0];
+  const index = randomBytes % EXCUSES.length;
   return EXCUSES[index];
 }
 

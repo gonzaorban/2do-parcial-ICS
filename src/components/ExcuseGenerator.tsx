@@ -31,7 +31,7 @@ export default function ExcuseGenerator() {
       const data = (await response.json()) as Excuse;
       setExcuse(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error desconocido');
+      setError('No se pudo generar la excusa. Intenta de nuevo.');
     } finally {
       setLoading(false);
     }
