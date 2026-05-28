@@ -99,9 +99,7 @@ const EXCUSES: Excuse[] = [
 ];
 
 export function getRandomExcuse(): Excuse {
-  // noinspection JSUnresolvedReference
-  // NOSONAR - using Math.random() for non-cryptographic randomness is acceptable
-  // for selecting joke/excuse items in this non-security-critical context
+  // NOSONAR: Math.random() acceptable for non-cryptographic randomness (selecting excuses)
   const index = Math.floor(Math.random() * EXCUSES.length);
   return EXCUSES[index];
 }
