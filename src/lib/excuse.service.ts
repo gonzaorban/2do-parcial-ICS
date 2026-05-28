@@ -99,6 +99,7 @@ const EXCUSES: Excuse[] = [
 ];
 
 export function getRandomExcuse(): Excuse {
+  // NOSONAR: Math.random() acceptable for non-cryptographic randomness (selecting excuses)
   const index = Math.floor(Math.random() * EXCUSES.length);
   return EXCUSES[index];
 }
