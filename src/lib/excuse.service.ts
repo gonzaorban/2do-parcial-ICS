@@ -1,3 +1,4 @@
+import { randomInt } from 'crypto';
 import { ExcuseSchema, type Excuse } from './excuse.schema';
 
 const EXCUSES: Excuse[] = [
@@ -99,8 +100,7 @@ const EXCUSES: Excuse[] = [
 ];
 
 export function getRandomExcuse(): Excuse {
-  const randomBytes = crypto.getRandomValues(new Uint32Array(1))[0];
-  const index = randomBytes % EXCUSES.length;
+  const index = randomInt(0, EXCUSES.length);
   return EXCUSES[index];
 }
 
