@@ -11,7 +11,7 @@ programador y ciberseguridad mezclados.
 ## Stack
 
 | Capa | Herramienta | Rol en el pipeline |
-|------|-------------|--------------------|
+|------|-------------|-----------|
 | Framework | Next.js 15 + App Router + Turbopack | Build artifact |
 | Lenguaje | TypeScript (strict) | Type safety en CI |
 | Validación | Zod | Schema compartido entre runtime, tests unit y E2E |
@@ -22,7 +22,7 @@ programador y ciberseguridad mezclados.
 | Container | Docker multi-stage + docker-compose | Reproducibilidad local |
 | CI | GitHub Actions (`.github/workflows/ci.yml`) | Orquestador |
 | Security | Snyk (pendiente) | Vulnerability scan en CI |
-| Quality | SonarCloud (pendiente) | Code quality gate en CI |
+| Quality | SonarCloud | Quality gate + coverage analysis (✅ implementado) |
 | Deploy | Vercel + CLI oficial | CD on push to `main` |
 
 ## Cómo correr en local
@@ -106,9 +106,9 @@ excusa, API responde JSON válido contra `ExcuseSchema`.
 
 Lo que falta para completar el pipeline (cada uno es un prompt aparte):
 
-- [ ] **SonarCloud** — alta del proyecto, `sonar-project.properties`, workflow
-      step con `SonarSource/sonarcloud-github-action` y `SONAR_TOKEN` secret.
-      Configurar quality gate (coverage mínima, no new bugs/code smells).
+- [x] **SonarCloud** — ✅ implementado. `sonar-project.properties` creado, 
+      workflow con `SonarSource/sonarcloud-github-action@v2`, `SONAR_TOKEN` 
+      secret configurado, quality gate activo.
 - [ ] **Snyk** — alta de cuenta, `SNYK_TOKEN` secret, step con
       `snyk/actions/node` antes del build. Tener en mente las
       vulnerabilidades de Next 15 / React 19 todavía recientes.
