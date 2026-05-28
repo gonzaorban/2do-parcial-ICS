@@ -12,9 +12,9 @@ severidad.
 **Por qué existe:** Es el entregable del **2do parcial de Integración y Entrega continua(ICS)** de la UTN. La nota viene por el **pipeline de
 CI/CD** que se monta alrededor, no por la app en sí.
 
-**Estado actual:** Andamiaje completo en disco. El usuario corre `bash setup.sh`
-para instalar y verificar localmente (`npm install` no está corrido todavía si
-ves esto en una sesión limpia).
+**Estado actual:** Pipeline CI/CD mayormente implementado. SonarCloud activado y 
+configurrado con SONAR_TOKEN. Snyk y Playwright en CI pendientes. Corre 
+`bash setup.sh` o `npm install` para instalar localmente.
 
 ## Stack y dónde vive cada pieza
 
@@ -97,12 +97,15 @@ Conventional Commits, en inglés:
 
 Cada uno es un prompt aparte del usuario:
 
-1. **SonarCloud** — alta + `sonar-project.properties` + step en workflow +
-   `SONAR_TOKEN` secret.
+1. ✅ **SonarCloud** — IMPLEMENTADO. `sonar-project.properties` con projectKey 
+   (gonzaorban_2do-parcial-ICS) y organization. Workflow: 
+   `SonarSource/sonarcloud-github-action@v2`. `SONAR_TOKEN` secret en GitHub. 
+   Coverage: `collectCoverageFrom` en jest.config.mjs. Security hotspots 
+   resueltos.
 2. **Snyk** — `snyk/actions/node` + `SNYK_TOKEN` secret. Step antes del build.
-3. **Vercel deploy** — job `deploy` con `amondnet/vercel-action` +
-   `VERCEL_TOKEN` / `VERCEL_ORG_ID` / `VERCEL_PROJECT_ID`. Output URL de
-   preview.
+3. **Vercel deploy** — job `deploy` con Vercel CLI (`vercel@latest`) +
+   `VERCEL_TOKEN` / `VERCEL_ORG_ID` / `VERCEL_PROJECT_ID` secrets. Output URL de
+   preview en el job.
 4. **Playwright en CI** — job `e2e` dependiente de `deploy`. Corre con
    `BASE_URL=$preview` y sube `playwright-report/` como artifact.
 
