@@ -1,4 +1,3 @@
-import { randomInt } from 'crypto';
 import { ExcuseSchema, type Excuse } from './excuse.schema';
 
 const EXCUSES: Excuse[] = [
@@ -100,7 +99,10 @@ const EXCUSES: Excuse[] = [
 ];
 
 export function getRandomExcuse(): Excuse {
-  const index = randomInt(0, EXCUSES.length);
+  // noinspection JSUnresolvedReference
+  // NOSONAR - using Math.random() for non-cryptographic randomness is acceptable
+  // for selecting joke/excuse items in this non-security-critical context
+  const index = Math.floor(Math.random() * EXCUSES.length);
   return EXCUSES[index];
 }
 
