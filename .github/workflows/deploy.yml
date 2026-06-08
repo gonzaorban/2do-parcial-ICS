@@ -11,46 +11,13 @@ jobs:
     name: Deploy to Vercel
     runs-on: ubuntu-latest
     if: github.event.workflow_run.conclusion == 'success'
-    outputs:
-      preview-url: ${{ steps.vercel-deploy.outputs.url }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install Vercel CLI
-        run: npm install -g vercel@latest
-
       - name: Deploy to Vercel
-        id: vercel-deploy
-        run: |
-          url=$(vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }} \
-            --scope=${{ secrets.VERCEL_ORG_ID }} \
-            --yes 2>&1 | tail -1)
-          echo "url=$url" >> $GITHUB_OUTPUT
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-
-  # TODO: Playwright E2E against deploy URL
-  # e2e:
-  #   needs: deploy
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-node@v4
-  #       with: { node-version: 20, cache: npm }
-  #     - run: npm ci
-  #     - run: npx playwright install --with-deps chromium
-  #     - name: Run Playwright tests
-  #       env:
-  #         BASE_URL: ${{ needs.deploy.outputs.preview-url }}
-  #       run: npx playwright test
-  #     - uses: actions/upload-artifact@v4
-  #       if: always()
-  #       with:
-  #         name: playwright-report
-  #         path: playwright-report/
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'

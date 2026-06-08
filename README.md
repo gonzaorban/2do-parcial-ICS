@@ -14,16 +14,14 @@ programador y ciberseguridad mezclados.
 |------|-------------|-----------|
 | Framework | Next.js 15 + App Router + Turbopack | Build artifact |
 | Lenguaje | TypeScript (strict) | Type safety en CI |
-| Validación | Zod | Schema compartido entre runtime, tests unit y E2E |
+| Validación | Zod | Schema compartido entre runtime y tests unit |
 | Linter | ESLint (`eslint-config-next`) | Gate de estilo en CI |
 | Formatter | Prettier | Pre-commit / format check |
 | Unit tests | Jest + `next/jest` + Testing Library | Quality gate en CI |
-| E2E | Playwright (Chromium) | Smoke contra deploy preview (pendiente) |
 | Container | Docker multi-stage + docker-compose | Reproducibilidad local |
 | CI | GitHub Actions (`.github/workflows/ci.yml`) | Orquestador |
-| Security | Snyk (pendiente) | Vulnerability scan en CI |
-| Quality | SonarCloud | Quality gate + coverage analysis (✅ implementado) |
-| Deploy | Vercel + CLI oficial | CD on push to `main` |
+| Quality | SonarCloud | Quality gate + coverage analysis |
+| Deploy | Vercel vía GitHub Actions (`amondnet/vercel-action`) | CD on push to `main` |
 
 ## Cómo correr en local
 
@@ -43,9 +41,8 @@ docker compose up --build   # http://localhost:3000 con hot-reload
 ### Con el script todo-en-uno
 
 ```bash
-bash setup.sh        # install + lint + test + build + playwright e2e
+bash setup.sh        # install + lint + test + build
 bash setup.sh verify # solo lint + test + build
-bash setup.sh e2e    # solo playwright
 ```
 
 ## Tests
@@ -62,32 +59,18 @@ Suite en [tests/unit/excuse.service.test.ts](tests/unit/excuse.service.test.ts):
 valida el catálogo entero contra el schema, hace 50 iteraciones de
 `getRandomExcuse()` y chequea el enum de severity.
 
-### End-to-end (Playwright)
-
-```bash
-npx playwright install chromium      # primera vez
-npm run e2e                          # corre los tests
-npm run e2e:ui                       # modo UI
-BASE_URL=https://tu-deploy.vercel.app npm run e2e   # contra el deploy
-```
-
-Suite en [e2e/excuse.spec.ts](e2e/excuse.spec.ts): home carga, click muestra
-excusa, API responde JSON válido contra `ExcuseSchema`.
-
 ## Estructura del proyecto
 
 ```
 .
-├── .github/workflows/ci.yml      # CI base (lint + test + build + TODOs)
+├── .github/workflows/ci.yml      # CI: lint + test + build + SonarCloud
+├── .github/workflows/deploy.yml  # CD: deploy a Vercel vía GitHub Actions
 ├── .claude/settings.json         # Config del agent harness
 ├── Dockerfile                    # Multi-stage (deps, dev, build, runner)
 ├── docker-compose.yml            # Dev local con hot-reload
 ├── setup.sh                      # Script bootstrap
 ├── CLAUDE.md                     # Guía para futuras sesiones con Claude
 ├── jest.config.mjs               # next/jest preset
-├── playwright.config.ts          # Chromium, BASE_URL desde env
-├── e2e/
-│   └── excuse.spec.ts            # 3 tests E2E
 ├── tests/unit/
 │   └── excuse.service.test.ts    # 3 tests unitarios
 └── src/
@@ -101,36 +84,6 @@ excusa, API responde JSON válido contra `ExcuseSchema`.
         ├── excuse.schema.ts      # Zod schema + tipo
         └── excuse.service.ts     # Catálogo + helpers
 ```
-
-## Roadmap
-
-Lo que falta para completar el pipeline (cada uno es un prompt aparte):
-
-- [x] **SonarCloud** — ✅ implementado. `sonar-project.properties` creado, 
-      workflow con `SonarSource/sonarcloud-github-action@v2`, `SONAR_TOKEN` 
-      secret configurado, quality gate activo.
-- [ ] **Snyk** — alta de cuenta, `SNYK_TOKEN` secret, step con
-      `snyk/actions/node` antes del build. Tener en mente las
-      vulnerabilidades de Next 15 / React 19 todavía recientes.
-- [x] **Vercel deploy** — `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`
-      secrets en GitHub. Job `deploy` con Vercel CLI oficial (`vercel@latest`).
-      Output del job = URL de producción. `next.config.ts` condiciona
-      `output: 'standalone'` para que Docker siga funcionando.
-- [ ] **Playwright en CI** — job `e2e` que dependa de `deploy`, instala
-      Chromium, corre con `BASE_URL=$preview-url`, sube `playwright-report/`
-      como artifact.
-
-Todos los hooks están comentados como `# TODO:` en
-[.github/workflows/ci.yml](.github/workflows/ci.yml).
-
-## Convenciones
-
-- **Código** (variables, funciones, archivos, comentarios): inglés.
-- **UI y textos de excusas**: español argentino, humor mezclado de
-  programador y ciberseguridad.
-- **Commits**: conventional commits en inglés (`feat:`, `fix:`, `chore:`,
-  `test:`, `docs:`, `ci:`).
-- **TypeScript strict mode** activado, sin `any` salvo justificación.
 
 ## Licencia
 

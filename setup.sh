@@ -4,14 +4,12 @@
 # ----------------------------------------------------------------------------
 # Este script reproduce todos los pasos del plan original sin tener que
 # correr `create-next-app` (todos los archivos ya están versionados en este
-# repo). Solo instala dependencias, ejecuta lint/test/build, levanta dev y
-# corre los E2E.
+# repo). Solo instala dependencias, ejecuta lint/test/build.
 #
 # Uso:
-#   bash setup.sh             # corre TODO (install + lint + test + build + e2e)
+#   bash setup.sh             # corre TODO (install + lint + test + build)
 #   bash setup.sh install     # solo dependencias
-#   bash setup.sh verify      # lint + test + build (sin e2e)
-#   bash setup.sh e2e         # solo playwright (asume deps ya instaladas)
+#   bash setup.sh verify      # lint + test + build
 #   bash setup.sh docker      # levanta el stack de dev en docker-compose
 # ============================================================================
 
@@ -28,15 +26,6 @@ log()  { printf "${BLUE}[setup]${NC} %s\n" "$*"; }
 ok()   { printf "${GREEN}[ok]${NC} %s\n" "$*"; }
 warn() { printf "${YELLOW}[warn]${NC} %s\n" "$*"; }
 err()  { printf "${RED}[err]${NC} %s\n" "$*" >&2; }
-
-# Detectar sistema operativo para Playwright
-IS_WINDOWS=false
-case "${OSTYPE:-}" in
-  msys*|cygwin*|win32*) IS_WINDOWS=true ;;
-esac
-if [[ -z "${OSTYPE:-}" ]] && [[ "$(uname -s 2>/dev/null || echo)" =~ MINGW|MSYS|CYGWIN ]]; then
-  IS_WINDOWS=true
-fi
 
 # ----------------------------------------------------------------------------
 # Steps
@@ -64,24 +53,6 @@ run_build() {
   log "Compilando con next build..."
   npm run build
   ok "Build exitoso."
-}
-
-install_playwright_browsers() {
-  log "Instalando navegadores de Playwright (solo Chromium)..."
-  if [[ "$IS_WINDOWS" == "true" ]]; then
-    # En Windows, --with-deps no aplica (es Linux-only)
-    npx playwright install chromium
-  else
-    npx playwright install --with-deps chromium
-  fi
-  ok "Playwright Chromium instalado."
-}
-
-run_e2e() {
-  log "Corriendo E2E tests (Playwright)..."
-  log "El config va a levantar 'npm run dev' automáticamente si BASE_URL no está seteado."
-  npx playwright test
-  ok "E2E tests pasaron."
 }
 
 smoke_dev() {
@@ -120,10 +91,6 @@ main() {
       run_unit_tests
       run_build
       ;;
-    e2e)
-      install_playwright_browsers
-      run_e2e
-      ;;
     docker)
       up_docker
       ;;
@@ -133,8 +100,6 @@ main() {
       run_lint
       run_unit_tests
       run_build
-      install_playwright_browsers
-      run_e2e
       ok "Todo verde. El proyecto está listo."
       cat <<EOF
 
@@ -145,17 +110,15 @@ main() {
 ║ 2. docker compose up         → mismo, pero containerizado          ║
 ║ 3. git init && git add -A    → cuando quieras versionar            ║
 ║                                                                    ║
-║ Pendientes del pipeline (ver .github/workflows/ci.yml):            ║
-║   - SonarCloud (code quality gate)                                 ║
-║   - Snyk (vulnerability scan)                                      ║
-║   - Vercel deploy on main                                          ║
-║   - Playwright E2E contra el deploy preview                        ║
+║ Pipeline (ver .github/workflows/):                                 ║
+║   - CI: lint + test + build + SonarCloud                           ║
+║   - Deploy: Vercel vía GitHub Actions on main                      ║
 ╚════════════════════════════════════════════════════════════════════╝
 EOF
       ;;
     *)
       err "Comando desconocido: $cmd"
-      echo "Uso: bash setup.sh [all|install|verify|e2e|docker]"
+      echo "Uso: bash setup.sh [all|install|verify|docker]"
       exit 1
       ;;
   esac
