@@ -12,9 +12,9 @@ severidad.
 **Por qué existe:** Es el entregable del **2do parcial de Integración y Entrega continua(ICS)** de la UTN. La nota viene por el **pipeline de
 CI/CD** que se monta alrededor, no por la app en sí.
 
-**Estado actual:** Pipeline CI/CD mayormente implementado. SonarCloud activado y 
-configurrado con SONAR_TOKEN. Snyk y Playwright en CI pendientes. Corre 
-`bash setup.sh` o `npm install` para instalar localmente.
+**Estado actual:** Pipeline CI/CD implementado. SonarCloud activado y configurado
+con SONAR_TOKEN. Deploy a Vercel vía GitHub Actions (`amondnet/vercel-action`).
+Corre `bash setup.sh` o `npm install` para instalar localmente.
 
 ## Stack y dónde vive cada pieza
 
@@ -25,8 +25,8 @@ configurrado con SONAR_TOKEN. Snyk y Playwright en CI pendientes. Corre
 | UI component | [src/components/ExcuseGenerator.tsx](src/components/ExcuseGenerator.tsx) |
 | Domain (schema + service) | [src/lib/](src/lib/) |
 | Unit tests | [tests/unit/](tests/unit/) |
-| E2E tests | [e2e/](e2e/) |
 | CI workflow | [.github/workflows/ci.yml](.github/workflows/ci.yml) |
+| Deploy workflow | [.github/workflows/deploy.yml](.github/workflows/deploy.yml) |
 | Docker | [Dockerfile](Dockerfile), [docker-compose.yml](docker-compose.yml) |
 | Setup script | [setup.sh](setup.sh) |
 
@@ -34,9 +34,9 @@ configurrado con SONAR_TOKEN. Snyk y Playwright en CI pendientes. Corre
 
 ```bash
 # Bootstrap (primera vez o entorno limpio)
-bash setup.sh              # todo: install + lint + test + build + e2e
+bash setup.sh              # todo: install + lint + test + build
 bash setup.sh install      # solo deps
-bash setup.sh verify       # lint + test + build (sin e2e)
+bash setup.sh verify       # lint + test + build
 
 # Dev
 npm run dev                # localhost:3000 con Turbopack
@@ -48,8 +48,6 @@ npm run format             # prettier --write
 npm run format:check
 npm test                   # jest
 npm run test:coverage
-npm run e2e                # playwright (levanta dev solo)
-BASE_URL=https://... npm run e2e   # contra deploy
 ```
 
 ## Decisiones tomadas (importantes)
@@ -58,12 +56,6 @@ BASE_URL=https://... npm run e2e   # contra deploy
   decidió **no incluir `ts-jest`**. Son redundantes — `next/jest` ya transforma
   TS via SWC. Si futuro Claude propone agregar `ts-jest`, revisar primero
   porque ya se descartó.
-- **Playwright:** un solo navegador (Chromium) para velocidad en CI. Si se
-  necesita Firefox/WebKit, agregar como proyecto adicional en
-  [playwright.config.ts](playwright.config.ts).
-- **`BASE_URL`:** Playwright usa `process.env.BASE_URL` o
-  `http://localhost:3000`. Si la env está seteada, **no levanta `npm run dev`
-  automáticamente** (clave para correr contra Vercel preview en CI).
 - **Docker:** multi-stage. `dev` target es el que usa `docker-compose.yml`.
   Los stages `build` y `runner` (standalone) están listos para un futuro
   deploy fuera de Vercel; ahora no se usan.
@@ -93,25 +85,19 @@ Conventional Commits, en inglés:
 
 **No** hacer `git push` ni `git remote add` hasta que el usuario lo indique explícitamente.
 
-## Roadmap del pipeline (qué falta)
+## Pipeline (implementado)
 
-Cada uno es un prompt aparte del usuario:
-
-1. ✅ **SonarCloud** — IMPLEMENTADO. `sonar-project.properties` con projectKey 
-   (gonzaorban_2do-parcial-ICS) y organization. Workflow: 
-   `SonarSource/sonarcloud-github-action@v2`. `SONAR_TOKEN` secret en GitHub. 
-   Coverage: `collectCoverageFrom` en jest.config.mjs. Security hotspots 
-   resueltos.
-2. **Snyk** — `snyk/actions/node` + `SNYK_TOKEN` secret. Step antes del build.
-3. **Vercel deploy** — job `deploy` con Vercel CLI (`vercel@latest`) +
-   `VERCEL_TOKEN` / `VERCEL_ORG_ID` / `VERCEL_PROJECT_ID` secrets. Output URL de
-   preview en el job.
-4. **Playwright en CI** — job `e2e` dependiente de `deploy`. Corre con
-   `BASE_URL=$preview` y sube `playwright-report/` como artifact.
-
-Todos esos puntos están como `# TODO:` ya escritos en
-[.github/workflows/ci.yml](.github/workflows/ci.yml) — al implementarlos,
-solo hay que descomentar y rellenar secrets/configs.
+1. ✅ **SonarCloud** — `sonar-project.properties` con projectKey
+   (gonzaorban_2do-parcial-ICS) y organization. Workflow:
+   `SonarSource/sonarcloud-github-action@v2`. `SONAR_TOKEN` secret en GitHub.
+   Coverage: `collectCoverageFrom` en jest.config.mjs. Security hotspots
+   resueltos. Vive en [.github/workflows/ci.yml](.github/workflows/ci.yml).
+2. ✅ **Vercel deploy** — lo ejecuta GitHub Actions con `amondnet/vercel-action`
+   (no la CLI nativa ni la git-integration de Vercel). Vive en
+   [.github/workflows/deploy.yml](.github/workflows/deploy.yml), disparado por
+   `workflow_run` tras un CI verde en `main`. Secrets: `VERCEL_TOKEN` /
+   `VERCEL_ORG_ID` / `VERCEL_PROJECT_ID` (ya cargados en GitHub). Para evitar
+   deploys duplicados, la Git Integration de Vercel debería estar desconectada.
 
 ## Cosas a NO hacer
 
@@ -122,18 +108,12 @@ solo hay que descomentar y rellenar secrets/configs.
   no hace falta llegar a ese punto.
 - ❌ Expandir el scope de la app. Si el usuario pide más features, preguntar
   primero — el foco del parcial es el pipeline, no la app.
-- ❌ Configurar Sonar/Snyk/Vercel sin que el usuario lo pida explícitamente.
+- ❌ Configurar Sonar/Vercel sin que el usuario lo pida explícitamente.
 
 ## Cómo verificar un cambio antes de cerrar
 
 ```bash
 npm run lint && npm test && npm run build
-```
-
-Si tocaste UI o el endpoint:
-
-```bash
-npm run e2e
 ```
 
 Si tocaste el Dockerfile:

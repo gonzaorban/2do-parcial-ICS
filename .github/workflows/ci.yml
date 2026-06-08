@@ -26,12 +26,6 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      # TODO: Snyk security scan
-      # - name: Snyk vulnerability scan
-      #   uses: snyk/actions/node@master
-      #   env:
-      #     SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-
       - name: Unit tests
         run: npm test -- --ci --coverage
 
