@@ -13,7 +13,8 @@ severidad.
 CI/CD** que se monta alrededor, no por la app en sí.
 
 **Estado actual:** Pipeline CI/CD implementado. SonarCloud activado y configurado
-con SONAR_TOKEN. Deploy a Vercel vía GitHub Actions (`amondnet/vercel-action`).
+con SONAR_TOKEN. Deploy a Vercel vía GitHub Actions con la CLI oficial
+(`vercel@latest`). Rama `main` protegida (ver "Protección de main").
 Corre `bash setup.sh` o `npm install` para instalar localmente.
 
 ## Stack y dónde vive cada pieza
@@ -92,12 +93,34 @@ Conventional Commits, en inglés:
    `SonarSource/sonarcloud-github-action@v2`. `SONAR_TOKEN` secret en GitHub.
    Coverage: `collectCoverageFrom` en jest.config.mjs. Security hotspots
    resueltos. Vive en [.github/workflows/ci.yml](.github/workflows/ci.yml).
-2. ✅ **Vercel deploy** — lo ejecuta GitHub Actions con `amondnet/vercel-action`
-   (no la CLI nativa ni la git-integration de Vercel). Vive en
+2. ✅ **Vercel deploy** — lo ejecuta GitHub Actions con la **CLI oficial de
+   Vercel** (`vercel@latest`: `pull` + `build` + `deploy`). NO se usa
+   `amondnet/vercel-action` (arrastraba una CLI 25.1.0 muerta). Vive en
    [.github/workflows/deploy.yml](.github/workflows/deploy.yml), disparado por
    `workflow_run` tras un CI verde en `main`. Secrets: `VERCEL_TOKEN` /
    `VERCEL_ORG_ID` / `VERCEL_PROJECT_ID` (ya cargados en GitHub). Para evitar
    deploys duplicados, la Git Integration de Vercel debería estar desconectada.
+3. ✅ **Protección de main** — ver sección dedicada abajo.
+
+## Protección de main
+
+La rama `main` está protegida en GitHub (Settings → Rules → Rulesets) para que
+todo cambio pase por PR con CI verde. Se configuró por la **web** con un
+**ruleset** (no la regla clásica):
+
+- **Target branches:** incluye `main` (vía "Include default branch" o pattern
+  `main`). ⚠️ Si el target queda vacío, GitHub avisa *"This ruleset does not
+  target any resources and will not be applied"* — hay que agregar el target.
+- **Enforcement status:** Active.
+- **Reglas activas:**
+  - ✅ Require a pull request before merging (bloquea push directo a `main`).
+  - ✅ Require status checks to pass before merging + branches up to date.
+    - Status check requerido: **`Lint, Test, Build`** (es el `name:` del job en
+      [.github/workflows/ci.yml](.github/workflows/ci.yml)). Opcionalmente el
+      check de SonarCloud.
+
+**Implicancia para sesiones futuras:** no se puede mergear a `main` sin PR y sin
+CI verde. Esto refuerza la regla de no hacer `git push` directo a `main`.
 
 ## Cosas a NO hacer
 
