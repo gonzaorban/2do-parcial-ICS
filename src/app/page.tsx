@@ -18,7 +18,8 @@ export default function Home() {
 
       <footer className="mt-12 text-center text-sm text-zinc-500">
         <p>
-          Si tu excusa falla, recordá: nunca fue tu culpa, siempre fue el firewall.
+          Si tu excusa falla, recordá: nunca fue tu culpa, siempre fue el
+          firewall.
         </p>
       </footer>
     </main>

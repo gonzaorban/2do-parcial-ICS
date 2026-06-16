@@ -26,17 +26,17 @@ Corre `bash setup.sh` o `npm install` para instalar localmente.
 
 ## Stack y dónde vive cada pieza
 
-| Item | Path |
-|------|------|
-| App router pages | [src/app/](src/app/) |
-| API route | [src/app/api/excuse/route.ts](src/app/api/excuse/route.ts) |
-| UI component | [src/components/ExcuseGenerator.tsx](src/components/ExcuseGenerator.tsx) |
-| Domain (schema + service) | [src/lib/](src/lib/) |
-| Unit tests | [tests/unit/](tests/unit/) |
-| CI workflow | [.github/workflows/ci.yml](.github/workflows/ci.yml) |
-| Deploy workflow | [.github/workflows/deploy.yml](.github/workflows/deploy.yml) |
-| Docker | [Dockerfile](Dockerfile), [docker-compose.yml](docker-compose.yml) |
-| Setup script | [setup.sh](setup.sh) |
+| Item                      | Path                                                                     |
+| ------------------------- | ------------------------------------------------------------------------ |
+| App router pages          | [src/app/](src/app/)                                                     |
+| API route                 | [src/app/api/excuse/route.ts](src/app/api/excuse/route.ts)               |
+| UI component              | [src/components/ExcuseGenerator.tsx](src/components/ExcuseGenerator.tsx) |
+| Domain (schema + service) | [src/lib/](src/lib/)                                                     |
+| Unit tests                | [tests/unit/](tests/unit/)                                               |
+| CI workflow               | [.github/workflows/ci.yml](.github/workflows/ci.yml)                     |
+| Deploy workflow           | [.github/workflows/deploy.yml](.github/workflows/deploy.yml)             |
+| Docker                    | [Dockerfile](Dockerfile), [docker-compose.yml](docker-compose.yml)       |
+| Setup script              | [setup.sh](setup.sh)                                                     |
 
 ## Comandos habituales
 
@@ -95,6 +95,14 @@ Conventional Commits, en inglés:
 
 ## Pipeline (implementado)
 
+El job de CI (`Lint, Test, Build` en [.github/workflows/ci.yml](.github/workflows/ci.yml))
+corre los steps en orden _fail-fast_: **Format check** (`npm run format:check`) →
+**Lint** → **Unit tests** (con `--coverage`) → **Build** → **SonarQube Scan**.
+El format check es un gate: si el código no está formateado con Prettier, el CI
+falla. Por eso, antes de commitear, corré `npm run format`. El scan de Sonar va
+último porque consume el coverage que generan los tests. Detalle del orden y el
+flujo CI→CD en la sección "Pipeline CI/CD" del [README.md](README.md).
+
 1. ✅ **SonarCloud** — `sonar-project.properties` con projectKey
    (gonzaorban_2do-parcial-ICS) y organization. Workflow:
    `SonarSource/sonarcloud-github-action@v2`. `SONAR_TOKEN` secret en GitHub.
@@ -116,8 +124,8 @@ todo cambio pase por PR con CI verde. Se configuró por la **web** con un
 **ruleset** (no la regla clásica):
 
 - **Target branches:** incluye `main` (vía "Include default branch" o pattern
-  `main`). ⚠️ Si el target queda vacío, GitHub avisa *"This ruleset does not
-  target any resources and will not be applied"* — hay que agregar el target.
+  `main`). ⚠️ Si el target queda vacío, GitHub avisa _"This ruleset does not
+  target any resources and will not be applied"_ — hay que agregar el target.
 - **Enforcement status:** Active.
 - **Reglas activas:**
   - ✅ Require a pull request before merging (bloquea push directo a `main`).
