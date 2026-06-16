@@ -21,7 +21,7 @@ programador y ciberseguridad mezclados.
 | Container | Docker multi-stage + docker-compose | Reproducibilidad local |
 | CI | GitHub Actions (`.github/workflows/ci.yml`) | Orquestador |
 | Quality | SonarCloud | Quality gate + coverage analysis |
-| Deploy | Vercel vía GitHub Actions (`amondnet/vercel-action`) | CD on push to `main` |
+| Deploy | Vercel vía GitHub Actions (CLI oficial `vercel@latest`) | CD on push to `main` |
 
 ## Cómo correr en local
 
@@ -63,18 +63,30 @@ valida el catálogo entero contra el schema, hace 50 iteraciones de
 
 ```
 .
-├── .github/workflows/ci.yml      # CI: lint + test + build + SonarCloud
-├── .github/workflows/deploy.yml  # CD: deploy a Vercel vía GitHub Actions
+├── .github/workflows/
+│   ├── ci.yml                    # CI: lint + test + build + SonarCloud
+│   └── deploy.yml                # CD: deploy a Vercel vía CLI oficial (workflow_run)
 ├── .claude/settings.json         # Config del agent harness
 ├── Dockerfile                    # Multi-stage (deps, dev, build, runner)
 ├── docker-compose.yml            # Dev local con hot-reload
-├── setup.sh                      # Script bootstrap
+├── setup.sh                      # Script bootstrap (install + lint + test + build)
 ├── CLAUDE.md                     # Guía para futuras sesiones con Claude
+├── README.md                     # Este archivo
+├── sonar-project.properties      # Config de SonarCloud (projectKey, coverage)
+├── next.config.ts                # Config de Next (output standalone)
 ├── jest.config.mjs               # next/jest preset
+├── jest.setup.ts                 # Setup de Testing Library
+├── eslint.config.mjs             # ESLint (eslint-config-next)
+├── tailwind.config.ts            # Tailwind
+├── postcss.config.mjs            # PostCSS
+├── tsconfig.json                 # TypeScript (strict)
+├── .prettierrc / .prettierignore # Prettier
+├── package.json                  # Scripts y deps
 ├── tests/unit/
 │   └── excuse.service.test.ts    # 3 tests unitarios
 └── src/
     ├── app/
+    │   ├── globals.css
     │   ├── layout.tsx
     │   ├── page.tsx
     │   └── api/excuse/route.ts   # GET → excusa random
