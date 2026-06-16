@@ -95,6 +95,14 @@ Conventional Commits, en inglés:
 
 ## Pipeline (implementado)
 
+El job de CI (`Lint, Test, Build` en [.github/workflows/ci.yml](.github/workflows/ci.yml))
+corre los steps en orden _fail-fast_: **Format check** (`npm run format:check`) →
+**Lint** → **Unit tests** (con `--coverage`) → **Build** → **SonarQube Scan**.
+El format check es un gate: si el código no está formateado con Prettier, el CI
+falla. Por eso, antes de commitear, corré `npm run format`. El scan de Sonar va
+último porque consume el coverage que generan los tests. Detalle del orden y el
+flujo CI→CD en la sección "Pipeline CI/CD" del [README.md](README.md).
+
 1. ✅ **SonarCloud** — `sonar-project.properties` con projectKey
    (gonzaorban_2do-parcial-ICS) y organization. Workflow:
    `SonarSource/sonarcloud-github-action@v2`. `SONAR_TOKEN` secret en GitHub.
