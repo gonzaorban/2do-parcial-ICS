@@ -166,7 +166,6 @@ Suite en [tests/unit/excuse.service.test.ts](tests/unit/excuse.service.test.ts):
 valida el catálogo entero contra el schema, hace 50 iteraciones de
 `getRandomExcuse()` y chequea el enum de severity.
 
-
 ## Cómo correr en local
 
 ### Con npm
