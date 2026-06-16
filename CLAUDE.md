@@ -64,11 +64,15 @@ npm run test:coverage
   decidió **no incluir `ts-jest`**. Son redundantes — `next/jest` ya transforma
   TS via SWC. Si futuro Claude propone agregar `ts-jest`, revisar primero
   porque ya se descartó.
-- **Docker:** multi-stage. `dev` target es el que usa `docker-compose.yml`.
-  Los stages `build` y `runner` (standalone) están listos para un futuro
-  deploy fuera de Vercel; ahora no se usan.
-- **Output `standalone`** en `next.config.ts`: necesario para el stage
-  `runner` del Dockerfile.
+- **Docker:** solo para **desarrollo local**. El Dockerfile tiene dos stages
+  (`deps` + `dev`) y `docker-compose.yml` levanta el target `dev` con
+  hot-reload. Se descartaron los stages `build`/`runner` (standalone de
+  producción) porque el hosting es Vercel y no se va a deployar un container
+  propio. Si futuro Claude propone re-agregarlos, preguntar primero: fue una
+  decisión consciente (YAGNI), no un olvido.
+- **`next.config.ts` sin `output: 'standalone'`:** se removió junto con el
+  stage `runner` (era su única razón de existir). Vercel buildea con el output
+  nativo de Next, no necesita standalone.
 
 ## Convenciones de código
 

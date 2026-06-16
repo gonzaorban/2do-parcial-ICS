@@ -19,7 +19,7 @@ programador y ciberseguridad mezclados.
 | Linter     | ESLint (`eslint-config-next`)                           | Gate de estilo en CI                               |
 | Formatter  | Prettier                                                | Gate de formato en CI (`format:check`)             |
 | Unit tests | Jest + `next/jest` + Testing Library                    | Quality gate en CI                                 |
-| Container  | Docker multi-stage + docker-compose                     | Reproducibilidad local                             |
+| Container  | Docker (`dev`) + docker-compose                         | Entorno de desarrollo local reproducible           |
 | CI         | GitHub Actions (`.github/workflows/ci.yml`)             | Orquestador                                        |
 | Quality    | SonarCloud                                              | Quality gate + coverage analysis                   |
 | Deploy     | Vercel vía GitHub Actions (CLI oficial `vercel@latest`) | CD on push to `main`                               |
@@ -32,13 +32,13 @@ programador y ciberseguridad mezclados.
 │   ├── ci.yml                    # CI: format + lint + test + build + SonarCloud
 │   └── deploy.yml                # CD: deploy a Vercel vía CLI oficial (workflow_run)
 ├── .claude/settings.json         # Config del agent harness
-├── Dockerfile                    # Multi-stage (deps, dev, build, runner)
+├── Dockerfile                    # Stages deps + dev (entorno de desarrollo local)
 ├── docker-compose.yml            # Dev local con hot-reload
 ├── setup.sh                      # Script bootstrap (install + lint + test + build)
 ├── CLAUDE.md                     # Guía para futuras sesiones con Claude
 ├── README.md                     # Este archivo
 ├── sonar-project.properties      # Config de SonarCloud (projectKey, coverage)
-├── next.config.ts                # Config de Next (output standalone)
+├── next.config.ts                # Config de Next
 ├── jest.config.mjs               # next/jest preset
 ├── jest.setup.ts                 # Setup de Testing Library
 ├── eslint.config.mjs             # ESLint (eslint-config-next)
