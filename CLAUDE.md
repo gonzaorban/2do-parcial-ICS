@@ -9,6 +9,13 @@ proyecto sin contexto previo.
 mínima — un botón que llama a `/api/excuse` y muestra una excusa con badge de
 severidad.
 
+**Arquitectura:** es **full-stack**, no puro frontend. El front es un Client
+Component (`'use client'`) que hace `fetch('/api/excuse')`; el back es un Route
+Handler ([src/app/api/excuse/route.ts](src/app/api/excuse/route.ts)) que corre
+en Node.js del lado del servidor (en Vercel, como serverless function). Front y
+back comparten el tipo `Excuse` de [src/lib/excuse.schema.ts](src/lib/excuse.schema.ts).
+Ver sección "Arquitectura" del [README.md](README.md).
+
 **Por qué existe:** Es el entregable del **2do parcial de Integración y Entrega continua(ICS)** de la UTN. La nota viene por el **pipeline de
 CI/CD** que se monta alrededor, no por la app en sí.
 
