@@ -26,17 +26,17 @@ Corre `bash setup.sh` o `npm install` para instalar localmente.
 
 ## Stack y dónde vive cada pieza
 
-| Item | Path |
-|------|------|
-| App router pages | [src/app/](src/app/) |
-| API route | [src/app/api/excuse/route.ts](src/app/api/excuse/route.ts) |
-| UI component | [src/components/ExcuseGenerator.tsx](src/components/ExcuseGenerator.tsx) |
-| Domain (schema + service) | [src/lib/](src/lib/) |
-| Unit tests | [tests/unit/](tests/unit/) |
-| CI workflow | [.github/workflows/ci.yml](.github/workflows/ci.yml) |
-| Deploy workflow | [.github/workflows/deploy.yml](.github/workflows/deploy.yml) |
-| Docker | [Dockerfile](Dockerfile), [docker-compose.yml](docker-compose.yml) |
-| Setup script | [setup.sh](setup.sh) |
+| Item                      | Path                                                                     |
+| ------------------------- | ------------------------------------------------------------------------ |
+| App router pages          | [src/app/](src/app/)                                                     |
+| API route                 | [src/app/api/excuse/route.ts](src/app/api/excuse/route.ts)               |
+| UI component              | [src/components/ExcuseGenerator.tsx](src/components/ExcuseGenerator.tsx) |
+| Domain (schema + service) | [src/lib/](src/lib/)                                                     |
+| Unit tests                | [tests/unit/](tests/unit/)                                               |
+| CI workflow               | [.github/workflows/ci.yml](.github/workflows/ci.yml)                     |
+| Deploy workflow           | [.github/workflows/deploy.yml](.github/workflows/deploy.yml)             |
+| Docker                    | [Dockerfile](Dockerfile), [docker-compose.yml](docker-compose.yml)       |
+| Setup script              | [setup.sh](setup.sh)                                                     |
 
 ## Comandos habituales
 
@@ -116,8 +116,8 @@ todo cambio pase por PR con CI verde. Se configuró por la **web** con un
 **ruleset** (no la regla clásica):
 
 - **Target branches:** incluye `main` (vía "Include default branch" o pattern
-  `main`). ⚠️ Si el target queda vacío, GitHub avisa *"This ruleset does not
-  target any resources and will not be applied"* — hay que agregar el target.
+  `main`). ⚠️ Si el target queda vacío, GitHub avisa _"This ruleset does not
+  target any resources and will not be applied"_ — hay que agregar el target.
 - **Enforcement status:** Active.
 - **Reglas activas:**
   - ✅ Require a pull request before merging (bloquea push directo a `main`).
