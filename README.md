@@ -8,12 +8,44 @@ La app es deliberadamente chica: un botón que pide una excusa random a un
 endpoint y la muestra con un badge de severidad. Las excusas tienen humor de
 programador y ciberseguridad mezclados.
 
+## Arquitectura
+
+Aunque mínima, la app es **full-stack**: Next.js no es solo frontend, es un
+framework que incluye su propio backend. La división la marca el App Router:
+
+```
+   FRONTEND (browser)              BACKEND (Node server)
+   ┌──────────────────┐            ┌──────────────────────┐
+   │ ExcuseGenerator  │──fetch()──▶│ api/excuse/route.ts  │
+   │ 'use client'     │◀──JSON─────│   GET() → JSON        │
+   └──────────────────┘            └──────────────────────┘
+     React + Tailwind                getRandomExcuse()
+                                      Node.js runtime
+```
+
+- **Frontend** — [src/components/ExcuseGenerator.tsx](src/components/ExcuseGenerator.tsx)
+  es un Client Component (`'use client'`) que corre en el navegador. No genera
+  la excusa: la **pide** al backend con `fetch('/api/excuse')`.
+- **Backend** — [src/app/api/excuse/route.ts](src/app/api/excuse/route.ts) es un
+  Route Handler que corre **del lado del servidor en Node.js** y expone
+  `GET /api/excuse`. El catálogo de excusas vive acá y nunca se envía entero al
+  cliente.
+- **Tipos compartidos** — front y back importan el mismo `Excuse` de
+  [src/lib/excuse.schema.ts](src/lib/excuse.schema.ts).
+
+**Node.js** es el runtime en dos planos: corre el tooling de CI/CD (`next`,
+`jest`, `eslint`) y el código del servidor en producción. En Vercel ese endpoint
+se despliega como **serverless function** (efímera, por request), no como un
+servidor Node corriendo 24/7 — es un detalle de deployment, no cambia que
+arquitectónicamente hay backend.
+
 ## Stack
 
 | Capa | Herramienta | Rol en el pipeline |
 |------|-------------|-----------|
 | Framework | Next.js 15 + App Router + Turbopack | Build artifact |
 | Lenguaje | TypeScript (strict) | Type safety en CI |
+| Runtime | Node.js 20 | Ejecuta el tooling de CI/CD y el backend en server |
 | Validación | Zod | Schema compartido entre runtime y tests unit |
 | Linter | ESLint (`eslint-config-next`) | Gate de estilo en CI |
 | Formatter | Prettier | Pre-commit / format check |
