@@ -41,19 +41,19 @@ arquitectónicamente hay backend.
 
 ## Stack
 
-| Capa | Herramienta | Rol en el pipeline |
-|------|-------------|-----------|
-| Framework | Next.js 15 + App Router + Turbopack | Build artifact |
-| Lenguaje | TypeScript (strict) | Type safety en CI |
-| Runtime | Node.js 20 | Ejecuta el tooling de CI/CD y el backend en server |
-| Validación | Zod | Schema compartido entre runtime y tests unit |
-| Linter | ESLint (`eslint-config-next`) | Gate de estilo en CI |
-| Formatter | Prettier | Pre-commit / format check |
-| Unit tests | Jest + `next/jest` + Testing Library | Quality gate en CI |
-| Container | Docker multi-stage + docker-compose | Reproducibilidad local |
-| CI | GitHub Actions (`.github/workflows/ci.yml`) | Orquestador |
-| Quality | SonarCloud | Quality gate + coverage analysis |
-| Deploy | Vercel vía GitHub Actions (CLI oficial `vercel@latest`) | CD on push to `main` |
+| Capa       | Herramienta                                             | Rol en el pipeline                                 |
+| ---------- | ------------------------------------------------------- | -------------------------------------------------- |
+| Framework  | Next.js 15 + App Router + Turbopack                     | Build artifact                                     |
+| Lenguaje   | TypeScript (strict)                                     | Type safety en CI                                  |
+| Runtime    | Node.js 20                                              | Ejecuta el tooling de CI/CD y el backend en server |
+| Validación | Zod                                                     | Schema compartido entre runtime y tests unit       |
+| Linter     | ESLint (`eslint-config-next`)                           | Gate de estilo en CI                               |
+| Formatter  | Prettier                                                | Gate de formato en CI (`format:check`)             |
+| Unit tests | Jest + `next/jest` + Testing Library                    | Quality gate en CI                                 |
+| Container  | Docker multi-stage + docker-compose                     | Reproducibilidad local                             |
+| CI         | GitHub Actions (`.github/workflows/ci.yml`)             | Orquestador                                        |
+| Quality    | SonarCloud                                              | Quality gate + coverage analysis                   |
+| Deploy     | Vercel vía GitHub Actions (CLI oficial `vercel@latest`) | CD on push to `main`                               |
 
 ## Cómo correr en local
 
