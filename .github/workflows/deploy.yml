@@ -39,3 +39,43 @@ jobs:
         run: |
           url=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
           echo "url=$url" >> "$GITHUB_OUTPUT"
+
+      - name: Notify Discord on success
+        if: success() && env.DISCORD_WEBHOOK != ''
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          url="${{ steps.vercel.outputs.url }}"
+          curl -sf -H "Content-Type: application/json" -X POST "$DISCORD_WEBHOOK" -d @- <<EOF
+          {
+            "embeds": [{
+              "title": "🚀 Deploy a Vercel OK",
+              "description": "La app está en producción.",
+              "color": 3066993,
+              "fields": [
+                { "name": "URL", "value": "$url" },
+                { "name": "Commit", "value": "\`${GITHUB_SHA::7}\`", "inline": true }
+              ]
+            }]
+          }
+          EOF
+
+      - name: Notify Discord on failure
+        if: failure() && env.DISCORD_WEBHOOK != ''
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          run_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          curl -sf -H "Content-Type: application/json" -X POST "$DISCORD_WEBHOOK" -d @- <<EOF
+          {
+            "embeds": [{
+              "title": "🔥 Deploy a Vercel falló",
+              "description": "El deploy a producción no se completó.",
+              "url": "$run_url",
+              "color": 15158332,
+              "fields": [
+                { "name": "Run", "value": "[Ver logs]($run_url)" }
+              ]
+            }]
+          }
+          EOF
