@@ -34,7 +34,6 @@ programador y ciberseguridad mezclados.
 ├── .claude/settings.json         # Config del agent harness
 ├── Dockerfile                    # Stages deps + dev (entorno de desarrollo local)
 ├── docker-compose.yml            # Dev local con hot-reload
-├── setup.sh                      # Script bootstrap (install + lint + test + build)
 ├── CLAUDE.md                     # Guía para futuras sesiones con Claude
 ├── README.md                     # Este archivo
 ├── sonar-project.properties      # Config de SonarCloud (projectKey, coverage)
@@ -179,13 +178,6 @@ npm run dev          # http://localhost:3000
 
 ```bash
 docker compose up --build   # http://localhost:3000 con hot-reload
-```
-
-### Con el script todo-en-uno
-
-```bash
-bash setup.sh        # install + lint + test + build
-bash setup.sh verify # solo lint + test + build
 ```
 
 ## Licencia

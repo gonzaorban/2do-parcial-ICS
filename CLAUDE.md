@@ -22,7 +22,7 @@ CI/CD** que se monta alrededor, no por la app en sí.
 **Estado actual:** Pipeline CI/CD implementado. SonarCloud activado y configurado
 con SONAR_TOKEN. Deploy a Vercel vía GitHub Actions con la CLI oficial
 (`vercel@latest`). Rama `main` protegida (ver "Protección de main").
-Corre `bash setup.sh` o `npm install` para instalar localmente.
+Corre `npm install` (o `docker compose up --build`) para levantarlo localmente.
 
 ## Stack y dónde vive cada pieza
 
@@ -36,15 +36,13 @@ Corre `bash setup.sh` o `npm install` para instalar localmente.
 | CI workflow               | [.github/workflows/ci.yml](.github/workflows/ci.yml)                     |
 | Deploy workflow           | [.github/workflows/deploy.yml](.github/workflows/deploy.yml)             |
 | Docker                    | [Dockerfile](Dockerfile), [docker-compose.yml](docker-compose.yml)       |
-| Setup script              | [setup.sh](setup.sh)                                                     |
 
 ## Comandos habituales
 
 ```bash
 # Bootstrap (primera vez o entorno limpio)
-bash setup.sh              # todo: install + lint + test + build
-bash setup.sh install      # solo deps
-bash setup.sh verify       # lint + test + build
+npm install                # solo deps
+npm install && npm run lint && npm test && npm run build  # install + verify
 
 # Dev
 npm run dev                # localhost:3000 con Turbopack

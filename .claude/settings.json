@@ -13,8 +13,6 @@
       "Bash(npm run build)",
       "Bash(npm run dev)",
       "Bash(npx next:*)",
-      "Bash(bash setup.sh)",
-      "Bash(bash setup.sh:*)",
       "Bash(docker compose up)",
       "Bash(docker compose up:*)",
       "Bash(docker compose down)",
