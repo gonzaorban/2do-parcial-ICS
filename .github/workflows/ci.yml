@@ -27,18 +27,23 @@ jobs:
         run: npm ci
 
       - name: Format check
+        id: format
         run: npm run format:check
 
       - name: Lint
+        id: lint
         run: npm run lint
 
       - name: Unit tests
+        id: test
         run: npm test -- --ci --coverage
 
       - name: Build
+        id: build
         run: npm run build
 
       - name: SonarQube Scan
+        id: sonar
         if: ${{ env.SONAR_TOKEN != '' }}
         uses: SonarSource/sonarqube-scan-action@7006c4492b2e0ee0f816d36501671557c97f5995 # v8.1.0
         env:
@@ -46,3 +51,32 @@ jobs:
         with:
           args: >
             -Dsonar.qualitygate.wait=true
+
+      - name: Notify Discord on failure
+        if: failure() && env.DISCORD_WEBHOOK != ''
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          # Determinar qué step falló (el primero con outcome=failure)
+          failed_step="(desconocido)"
+          if [ "${{ steps.format.outcome }}" = "failure" ]; then failed_step="Format check"; fi
+          if [ "${{ steps.lint.outcome }}"   = "failure" ]; then failed_step="Lint"; fi
+          if [ "${{ steps.test.outcome }}"   = "failure" ]; then failed_step="Unit tests"; fi
+          if [ "${{ steps.build.outcome }}"  = "failure" ]; then failed_step="Build"; fi
+          if [ "${{ steps.sonar.outcome }}"  = "failure" ]; then failed_step="SonarQube"; fi
+
+          run_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          curl -sf -H "Content-Type: application/json" -X POST "$DISCORD_WEBHOOK" -d @- <<EOF
+          {
+            "embeds": [{
+              "title": "❌ CI falló — $failed_step",
+              "description": "Branch \`${{ github.ref_name }}\` · commit \`${GITHUB_SHA::7}\`\nAutor: ${{ github.actor }}",
+              "url": "$run_url",
+              "color": 15158332,
+              "fields": [
+                { "name": "Paso que falló", "value": "$failed_step", "inline": true },
+                { "name": "Run", "value": "[Ver logs]($run_url)", "inline": true }
+              ]
+            }]
+          }
+          EOF
