@@ -129,7 +129,8 @@ flujo CI→CD en la sección "Pipeline CI/CD" del [README.md](README.md).
 
 1. ✅ **SonarCloud** — `sonar-project.properties` con projectKey
    (gonzaorban_2do-parcial-ICS) y organization. Workflow:
-   `SonarSource/sonarcloud-github-action@v2`. `SONAR_TOKEN` secret en GitHub.
+   `SonarSource/sonarqube-scan-action` (pinneada a `@…v8.1.0`; la vieja
+   `sonarcloud-github-action` está deprecada). `SONAR_TOKEN` secret en GitHub.
    Coverage: `collectCoverageFrom` en jest.config.mjs. Security hotspots
    resueltos. Vive en [.github/workflows/ci.yml](.github/workflows/ci.yml).
 2. ✅ **Vercel deploy** — lo ejecuta GitHub Actions con la **CLI oficial de
