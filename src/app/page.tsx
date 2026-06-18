@@ -7,19 +7,21 @@ export default function Home() {
         <h1 className="text-3xl sm:text-5xl font-bold text-zinc-900 dark:text-zinc-50">
           Generador de Excusas para no entregar el TP
         </h1>
-        <p className="mt-3 text-zinc-600 dark:text-zinc-400">
-          Hecho con cariño para que no te bochen en el parcial.
-        </p>
       </header>
 
       <section className="flex-1 flex items-center justify-center w-full">
         <ExcuseGenerator />
       </section>
 
-      <footer className="mt-12 text-center text-sm text-zinc-500">
-        <p>
-          Si tu excusa falla, recordá: nunca fue tu culpa, siempre fue el
-          firewall.
+      <footer className="mt-12 w-full max-w-md border-t border-zinc-300 pt-6 text-center dark:border-zinc-700">
+        <p className="font-medium text-zinc-700 dark:text-zinc-300">
+          Gonzalo Tomás Orban
+        </p>
+        <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+          Ingeniería y Calidad de Software
+        </p>
+        <p className="text-xs text-zinc-500 dark:text-zinc-400">
+          2do Parcial · 2026
         </p>
       </footer>
     </main>
