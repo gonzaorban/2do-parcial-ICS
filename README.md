@@ -102,6 +102,30 @@ Usa la CLI oficial de Vercel (`vercel@latest`: `pull` → `build` → `deploy
 --prod`). Es decir: **un cambio solo llega a producción si pasó todo el CI en
 `main`**.
 
+### Notificaciones a Discord
+
+Ambos workflows postean a un webhook de Discord (secret `DISCORD_WEBHOOK`) vía
+`curl`. Si el secret no está cargado, los steps se omiten sin romper el pipeline.
+
+| Evento          | Workflow                                   | Cuándo dispara                                  |
+| --------------- | ------------------------------------------ | ----------------------------------------------- |
+| ❌ CI falló     | [ci.yml](.github/workflows/ci.yml)         | Cualquier step del CI falla (en PR o en `main`) |
+| 🚀 Deploy OK    | [deploy.yml](.github/workflows/deploy.yml) | Deploy a Vercel exitoso                         |
+| 🔥 Deploy falló | [deploy.yml](.github/workflows/deploy.yml) | Deploy a Vercel falla                           |
+
+**CI: solo se notifica en fallo, no en éxito** — es una decisión deliberada para
+evitar ruido. El verde de un CI exitoso ya se ve en el check del PR y, si es
+`main`, encadena el deploy (que sí avisa). El embed de fallo incluye:
+
+- **Contexto** — distingue el origen del run: `PR #<n> (<branch>)` para un
+  `pull_request` o `main (push)` para un push a `main`. Se calcula con
+  `github.event_name`; en PR se usa `github.head_ref` (nombre legible de la rama)
+  en vez del merge ref críptico (`<n>/merge`).
+- **Paso que falló** — Format / Lint / Unit tests / Build / SonarQube, derivado
+  del `outcome` de cada step.
+- **Commit** — link clickeable al SHA que disparó el run.
+- **Run** — link a los logs del run en Actions.
+
 ## Arquitectura
 
 Aunque mínima, la app es **full-stack**: Next.js no es solo frontend, es un
