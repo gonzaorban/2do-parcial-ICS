@@ -77,10 +77,11 @@ npm run test:coverage
   [jest.config.mjs](jest.config.mjs) y `sonar.coverage.exclusions` en
   [sonar-project.properties](sonar-project.properties). **Por qué:** el Quality
   Gate de Sonar mide `new_coverage ≥ 80%` sobre New Code; la UI de puro markup
-  daría 0% y rompería el gate en cada PR que toque solo JSX. Si futuro Claude
-  propone agregar tests de render con `@testing-library/react` solo para subir
-  este coverage, **preguntar primero** — fue una decisión consciente excluir, no
-  un olvido. (`sonar.coverage.exclusions` saca del cálculo de coverage pero NO
+  daría 0% y rompería el gate en cada PR que toque solo JSX. Como no hay tests de
+  render, `@testing-library/react` y `@testing-library/jest-dom` se **removieron**
+  (eran deps muertas). Si futuro Claude propone re-agregarlas para testear la UI
+  solo para subir este coverage, **preguntar primero** — fue una decisión
+  consciente excluir, no un olvido. (`sonar.coverage.exclusions` saca del cálculo de coverage pero NO
   del análisis de bugs/seguridad; es distinto de `sonar.exclusions`.)
 - **Sonar: New Code en PR vs main (no es un bug):** el gate de `new_coverage` se
   calcula sobre baselines distintas. En un **PR**, el New Code es solo el diff

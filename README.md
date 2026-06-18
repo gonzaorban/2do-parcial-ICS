@@ -18,7 +18,7 @@ programador y ciberseguridad mezclados.
 | Validación | Zod                                                     | Schema compartido entre runtime y tests unit       |
 | Linter     | ESLint (`eslint-config-next`)                           | Gate de estilo en CI                               |
 | Formatter  | Prettier                                                | Gate de formato en CI (`format:check`)             |
-| Unit tests | Jest + `next/jest` + Testing Library                    | Quality gate en CI                                 |
+| Unit tests | Jest + `next/jest`                                      | Quality gate en CI                                 |
 | Container  | Docker (`dev`) + docker-compose                         | Entorno de desarrollo local reproducible           |
 | CI         | GitHub Actions (`.github/workflows/ci.yml`)             | Orquestador                                        |
 | Quality    | SonarCloud                                              | Quality gate + coverage analysis                   |
@@ -39,7 +39,6 @@ programador y ciberseguridad mezclados.
 ├── sonar-project.properties      # Config de SonarCloud (projectKey, coverage)
 ├── next.config.ts                # Config de Next
 ├── jest.config.mjs               # next/jest preset
-├── jest.setup.ts                 # Setup de Testing Library
 ├── eslint.config.mjs             # ESLint (eslint-config-next)
 ├── tailwind.config.ts            # Tailwind
 ├── postcss.config.mjs            # PostCSS
