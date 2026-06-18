@@ -71,6 +71,28 @@ npm run test:coverage
 - **`next.config.ts` sin `output: 'standalone'`:** se removió junto con el
   stage `runner` (era su única razón de existir). Vercel buildea con el output
   nativo de Next, no necesita standalone.
+- **Coverage de UI excluido (page.tsx / layout.tsx):** los componentes de
+  presentación del App Router son JSX sin lógica testeable y se **excluyen del
+  coverage** en dos lugares que deben quedar alineados: `collectCoverageFrom` en
+  [jest.config.mjs](jest.config.mjs) y `sonar.coverage.exclusions` en
+  [sonar-project.properties](sonar-project.properties). **Por qué:** el Quality
+  Gate de Sonar mide `new_coverage ≥ 80%` sobre New Code; la UI de puro markup
+  daría 0% y rompería el gate en cada PR que toque solo JSX. Si futuro Claude
+  propone agregar tests de render con `@testing-library/react` solo para subir
+  este coverage, **preguntar primero** — fue una decisión consciente excluir, no
+  un olvido. (`sonar.coverage.exclusions` saca del cálculo de coverage pero NO
+  del análisis de bugs/seguridad; es distinto de `sonar.exclusions`.)
+- **Sonar: New Code en PR vs main (no es un bug):** el gate de `new_coverage` se
+  calcula sobre baselines distintas. En un **PR**, el New Code es solo el diff
+  del PR; si son puras líneas no cubribles (JSX), el ratio es `0/0` → Sonar
+  **omite** la condición → gate **verde**. En `main` (rama `LONG`), el New Code
+  se mide contra `previous_version` (baseline anclada a una fecha porque no se
+  setea `sonar.projectVersion`) y arrastra líneas ejecutables sin cubrir →
+  `new_coverage = 0% < 80%` → **rojo**. El análisis de `main` corre **post-merge**.
+  Por eso un PR puede mergear verde y el gate de `main` recién después marcar
+  rojo. El check `SonarCloud Code Analysis` ES requerido en el ruleset (junto con
+  `Lint, Test, Build`); el merge se permite si el check del **PR** está verde,
+  porque GitHub solo evalúa los checks del PR.
 
 ## Convenciones de código
 
