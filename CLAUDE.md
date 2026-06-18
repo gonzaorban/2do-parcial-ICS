@@ -140,6 +140,18 @@ flujo CI→CD en la sección "Pipeline CI/CD" del [README.md](README.md).
    `VERCEL_ORG_ID` / `VERCEL_PROJECT_ID` (ya cargados en GitHub). Para evitar
    deploys duplicados, la Git Integration de Vercel debería estar desconectada.
 3. ✅ **Protección de main** — ver sección dedicada abajo.
+4. ✅ **Notificaciones a Discord** — ambos workflows postean a un webhook
+   (secret `DISCORD_WEBHOOK`) con `curl`; si el secret no existe, los steps se
+   omiten. Eventos: **CI falló** ([ci.yml](.github/workflows/ci.yml)), **Deploy
+   OK** y **Deploy falló** ([deploy.yml](.github/workflows/deploy.yml)). El embed
+   de CI distingue el origen con un campo `Contexto`: `PR #<n> (<branch>)` vs
+   `main (push)`, usando `github.head_ref` para el nombre legible de la rama (no
+   el merge ref `<n>/merge`), e incluye link al commit y a los logs del run.
+   **El CI solo notifica en fallo, no en éxito** — es deliberado (el verde ya se
+   ve en el check del PR, y en `main` encadena el deploy que sí avisa). Si futuro
+   Claude propone agregar avisos de CI exitoso, **preguntar primero**: fue una
+   decisión consciente para evitar ruido, no un olvido. Detalle en la sección
+   "Notificaciones a Discord" del [README.md](README.md).
 
 ## Protección de main
 
