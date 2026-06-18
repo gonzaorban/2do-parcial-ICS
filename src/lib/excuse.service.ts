@@ -111,3 +111,59 @@ export function validateAllExcuses(): boolean {
 export function getAllExcuses(): readonly Excuse[] {
   return EXCUSES;
 }
+
+export function funcion(n: number): number {
+  if (n > 0) {
+    return n * 2;
+  }
+  return n - 1;
+}
+
+export function funcion2(n: number): number {
+  if (n > 0) {
+    return n * 2;
+  }
+  return n - 1;
+}
+
+export function funcion3(n: number): number {
+  if (n > 0) {
+    return n * 2;
+  }
+  return n - 1;
+}
+
+export function funcion4(n: number): number {
+  if (n > 0) {
+    return n * 2;
+  }
+  return n - 1;
+}
+
+export function funcion5(n: number): number {
+  if (n > 0) {
+    return n * 2;
+  }
+  return n - 1;
+}
+
+export function funcion6(n: number): number {
+  if (n > 0) {
+    return n * 2;
+  }
+  return n - 1;
+}
+
+export function funcion7(n: number): number {
+  if (n > 0) {
+    return n * 2;
+  }
+  return n - 1;
+}
+
+export function funcion8(n: number): number {
+  if (n > 0) {
+    return n * 2;
+  }
+  return n - 1;
+}
