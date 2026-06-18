@@ -16,6 +16,7 @@ const customConfig = {
     'src/**/*.{ts,tsx}',
     '!src/**/*.d.ts',
     '!src/app/layout.tsx',
+    '!src/app/page.tsx',
   ],
 };
 

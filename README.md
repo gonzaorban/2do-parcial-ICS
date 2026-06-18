@@ -165,6 +165,28 @@ Suite en [tests/unit/excuse.service.test.ts](tests/unit/excuse.service.test.ts):
 valida el catálogo entero contra el schema, hace 50 iteraciones de
 `getRandomExcuse()` y chequea el enum de severity.
 
+### Coverage y componentes de presentación
+
+Los componentes de presentación del App Router (`src/app/page.tsx`,
+`src/app/layout.tsx`) son **JSX sin lógica testeable**, así que se **excluyen del
+coverage** en dos lugares que deben quedar alineados:
+
+- **Jest** — `collectCoverageFrom` en [jest.config.mjs](jest.config.mjs) los saca
+  del reporte `lcov.info`.
+- **SonarCloud** — `sonar.coverage.exclusions` en
+  [sonar-project.properties](sonar-project.properties) los excluye del cálculo de
+  coverage (no del análisis de bugs/seguridad).
+
+Esto evita que el Quality Gate de Sonar (`new_coverage ≥ 80%`) falle por archivos
+de UI. El estándar de coverage se mantiene intacto para el código con lógica
+real (schema, service y route).
+
+> El gate evalúa coverage sobre **New Code**, y ese New Code se calcula distinto
+> según la rama: en un **PR** es solo el diff del PR, en `main` es todo lo
+> cambiado desde la baseline `previous_version`. Por eso un cambio de puro JSX
+> puede pasar el gate en el PR (sin líneas cubribles → condición omitida) y
+> recién marcar coverage bajo en `main`. La exclusión resuelve ambos casos.
+
 ## Cómo correr en local
 
 ### Con npm
