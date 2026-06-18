@@ -47,6 +47,7 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
           url="${{ steps.vercel.outputs.url }}"
+          short_sha="${GITHUB_SHA:0:7}"
           curl -sf -H "Content-Type: application/json" -X POST "$DISCORD_WEBHOOK" -d @- <<EOF
           {
             "embeds": [{
@@ -55,7 +56,7 @@ jobs:
               "color": 3066993,
               "fields": [
                 { "name": "URL", "value": "$url" },
-                { "name": "Commit", "value": "\`${GITHUB_SHA::7}\`", "inline": true }
+                { "name": "Commit", "value": "\`$short_sha\`", "inline": true }
               ]
             }]
           }
