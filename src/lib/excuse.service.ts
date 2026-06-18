@@ -111,3 +111,10 @@ export function validateAllExcuses(): boolean {
 export function getAllExcuses(): readonly Excuse[] {
   return EXCUSES;
 }
+
+export function funcion(n: number): number {
+  if (n > 0) {
+    return n * 2;
+  }
+  return n - 1;
+}
