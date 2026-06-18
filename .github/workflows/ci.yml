@@ -65,16 +65,29 @@ jobs:
           if [ "${{ steps.build.outcome }}"  = "failure" ]; then failed_step="Build"; fi
           if [ "${{ steps.sonar.outcome }}"  = "failure" ]; then failed_step="SonarQube"; fi
 
+          # Distinguir si el run viene de un PR o de un push a main
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            context="PR #${{ github.event.pull_request.number }} (\`${{ github.head_ref }}\`)"
+            commit_sha="${{ github.event.pull_request.head.sha }}"
+          else
+            context="main (push)"
+            commit_sha="${{ github.sha }}"
+          fi
+
           run_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          commit_url="${{ github.server_url }}/${{ github.repository }}/commit/$commit_sha"
+          short_sha="${commit_sha:0:7}"
           curl -sf -H "Content-Type: application/json" -X POST "$DISCORD_WEBHOOK" -d @- <<EOF
           {
             "embeds": [{
               "title": "❌ CI falló — $failed_step",
-              "description": "Branch \`${{ github.ref_name }}\` · commit \`${GITHUB_SHA::7}\`\nAutor: ${{ github.actor }}",
+              "description": "Autor: ${{ github.actor }}",
               "url": "$run_url",
               "color": 15158332,
               "fields": [
+                { "name": "Contexto", "value": "$context", "inline": true },
                 { "name": "Paso que falló", "value": "$failed_step", "inline": true },
+                { "name": "Commit", "value": "[\`$short_sha\`]($commit_url)", "inline": true },
                 { "name": "Run", "value": "[Ver logs]($run_url)", "inline": true }
               ]
             }]
